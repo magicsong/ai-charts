@@ -1,0 +1,102 @@
+# pluginDaemon
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dify.fullname" . }}-plugin-daemon
+  labels:
+    {{- include "dify.labels" . | nindent 4 }}
+    app.kubernetes.io/component: plugin-daemon
+    {{- include "dify.global.labels" . | nindent 4 }}
+spec:
+  {{- if hasKey .Values.pluginDaemon "autoscaling" }}
+  {{- if not .Values.pluginDaemon.autoscaling.enabled }}
+  replicas: {{ .Values.pluginDaemon.replicaCount | default 1 }}
+  {{- end }}
+  {{- else }}
+  replicas: 1
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "dify.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: plugin-daemon
+  template:
+    metadata:
+      {{- with .Values.pluginDaemon.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "dify.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: plugin-daemon
+        {{- include "dify.global.labels" . | nindent 8 }}
+    spec:
+      {{- with .Values.pluginDaemon.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "dify.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.pluginDaemon.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-plugin-daemon
+          securityContext:
+            {{- toYaml .Values.pluginDaemon.securityContext | nindent 12 }}
+          image: "{{ .Values.pluginDaemon.image.repository }}:{{ .Values.pluginDaemon.image.tag | default "latest" }}"
+          imagePullPolicy: {{ .Values.pluginDaemon.image.pullPolicy }}
+          envFrom:
+            {{- if .Values.pluginDaemon.configMapRef }}
+            - configMapRef:
+                name: {{ .Values.pluginDaemon.configMapRef }}
+            {{- end }}
+            {{- with .Values.pluginDaemon.envFrom }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          env:
+            - name: SERVER_PORT
+                value: {{ .Values.pluginDaemon.env.SERVER_PORT | default "5002" | quote }}
+            - name: SERVER_KEY
+                value: {{ .Values.pluginDaemon.env.SERVER_KEY | default "lYkiYYT6owG+71oLerGzA7GXCgOT++6ovaezWAjpCjf+Sjc3ZtU+qUEi" | quote }}
+            - name: MAX_PLUGIN_PACKAGE_SIZE
+                value: {{ .Values.pluginDaemon.env.MAX_PLUGIN_PACKAGE_SIZE | default "52428800" | quote }}
+            - name: PPROF_ENABLED
+                value: {{ .Values.pluginDaemon.env.PPROF_ENABLED | default "false" | quote }}
+            - name: DIFY_INNER_API_URL
+                value: {{ .Values.pluginDaemon.env.DIFY_INNER_API_URL | default (printf "http://%s-api:5001" (include "dify.fullname" .)) | quote }}
+            - name: DIFY_INNER_API_KEY
+                value: {{ .Values.pluginDaemon.env.DIFY_INNER_API_KEY | default "QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1" | quote }}
+            - name: PLUGIN_REMOTE_INSTALLING_HOST
+                value: {{ .Values.pluginDaemon.env.PLUGIN_REMOTE_INSTALLING_HOST | default "localhost" | quote }}
+            - name: PLUGIN_REMOTE_INSTALLING_PORT
+                value: {{ .Values.pluginDaemon.env.PLUGIN_REMOTE_INSTALLING_PORT | default "5003" | quote }}
+            - name: PLUGIN_WORKING_PATH
+                value: {{ .Values.pluginDaemon.env.PLUGIN_WORKING_PATH | default "/app/storage/cwd" | quote }}
+            - name: FORCE_VERIFYING_SIGNATURE
+                value: {{ .Values.pluginDaemon.env.FORCE_VERIFYING_SIGNATURE | default "true" | quote }}
+          volumeMounts:
+            - name: plugin-daemon-storage
+              mountPath: /app/storage
+          ports:
+            - name: http
+              containerPort: {{ .Values.pluginDaemon.containerPort }}
+              protocol: TCP
+      volumes:
+        - name: plugin-daemon-storage
+          {{- if .Values.pluginDaemon.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "dify.fullname" . }}-plugin-daemon-pvc
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+      {{- with .Values.pluginDaemon.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pluginDaemon.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pluginDaemon.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

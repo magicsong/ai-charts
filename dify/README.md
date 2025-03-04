@@ -17,7 +17,7 @@ global:
     # Set to the latest version of dify
     # Check the version here: https://github.com/langgenius/dify/releases
     # If not set, Using the default value in Chart.yaml
-    tag: "0.6.3"
+    tag: "1.0.0"
   extraBackendEnvs:
   - name: SECRET_KEY
     value: "generate your own one"

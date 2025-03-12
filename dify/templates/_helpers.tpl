@@ -86,12 +86,18 @@ commonBackendEnvs are for api and worker containers
 - name: {{ . }}
   value: {{ include "dify.baseUrl" $ }}
 {{- end }}
+- name: MARKETPLACE_API_URL
+  value: https://marketplace.dify.ai
+- name: MARKETPLACE_URL
+  value: https://marketplace.dify.ai
 {{- end }}
 
 
 {{- define "dify.commonBackendEnvs" -}}
 - name: STORAGE_TYPE
   value: {{ .Values.global.storageType }}
+- name: INNER_API_KEY_FOR_PLUGIN
+  value: QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1
 {{- if .Values.redis.embedded }}
 - name: CELERY_BROKER_URL
   value: redis://:{{ .Values.redis.auth.password }}@{{ include "dify.fullname" . }}-redis-master:6379/1
@@ -101,6 +107,8 @@ commonBackendEnvs are for api and worker containers
   value: "1"
 - name: REDIS_PASSWORD
   value: {{ .Values.redis.auth.password }}
+- name: REDIS_PORT
+  value: "6379"
 {{- end }}
 {{- if .Values.postgresql.embedded }}
 - name: DB_USERNAME

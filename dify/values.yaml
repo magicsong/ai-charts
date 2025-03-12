@@ -423,11 +423,11 @@ globalEnv:
 
   # Specifies the allowed origins for cross-origin requests to the Web API,
   # e.g. https://dify.app or * for all origins.
-  WEB_API_CORS_ALLOW_ORIGINS: *
+  WEB_API_CORS_ALLOW_ORIGINS: "*"
 
   # Specifies the allowed origins for cross-origin requests to the console API,
   # e.g. https://cloud.dify.ai or * for all origins.
-  CONSOLE_CORS_ALLOW_ORIGINS: *
+  CONSOLE_CORS_ALLOW_ORIGINS: "*"
 
   # ------------------------------
   # File Storage Configuration
@@ -510,13 +510,6 @@ globalEnv:
   VOLCENGINE_TOS_ENDPOINT: your-server-url
   VOLCENGINE_TOS_REGION: your-region
 
-  # Baidu OBS Storage Configuration
-  #
-  BAIDU_OBS_BUCKET_NAME: your-bucket-name
-  BAIDU_OBS_SECRET_KEY: your-secret-key
-  BAIDU_OBS_ACCESS_KEY: your-access-key
-  BAIDU_OBS_ENDPOINT: your-server-url
-
   # Supabase Storage Configuration
   #
   SUPABASE_BUCKET_NAME: your-bucket-name
@@ -559,144 +552,6 @@ globalEnv:
   MYSCALE_PASSWORD: 
   MYSCALE_DATABASE: dify
   MYSCALE_FTS_PARAMS: 
-
-  # Couchbase configurations, only available when VECTOR_STORE is `couchbase`
-  # The connection string must include hostname defined in the docker-compose file (couchbase-server in this case)
-  COUCHBASE_CONNECTION_STRING: couchbase://couchbase-server
-  COUCHBASE_USER: Administrator
-  COUCHBASE_PASSWORD: password
-  COUCHBASE_BUCKET_NAME: Embeddings
-  COUCHBASE_SCOPE_NAME: _default
-
-  # pgvector configurations, only available when VECTOR_STORE is `pgvector`
-  PGVECTOR_HOST: pgvector
-  PGVECTOR_PORT: 5432
-  PGVECTOR_USER: postgres
-  PGVECTOR_PASSWORD: difyai123456
-  PGVECTOR_DATABASE: dify
-  PGVECTOR_MIN_CONNECTION: 1
-  PGVECTOR_MAX_CONNECTION: 5
-
-  # pgvecto-rs configurations, only available when VECTOR_STORE is `pgvecto-rs`
-  PGVECTO_RS_HOST: pgvecto-rs
-  PGVECTO_RS_PORT: 5432
-  PGVECTO_RS_USER: postgres
-  PGVECTO_RS_PASSWORD: difyai123456
-  PGVECTO_RS_DATABASE: dify
-
-  # analyticdb configurations, only available when VECTOR_STORE is `analyticdb`
-  ANALYTICDB_KEY_ID: your-ak
-  ANALYTICDB_KEY_SECRET: your-sk
-  ANALYTICDB_REGION_ID: cn-hangzhou
-  ANALYTICDB_INSTANCE_ID: gp-ab123456
-  ANALYTICDB_ACCOUNT: testaccount
-  ANALYTICDB_PASSWORD: testpassword
-  ANALYTICDB_NAMESPACE: dify
-  ANALYTICDB_NAMESPACE_PASSWORD: difypassword
-  ANALYTICDB_HOST: gp-test.aliyuncs.com
-  ANALYTICDB_PORT: 5432
-  ANALYTICDB_MIN_CONNECTION: 1
-  ANALYTICDB_MAX_CONNECTION: 5
-
-  # TiDB vector configurations, only available when VECTOR_STORE is `tidb`
-  TIDB_VECTOR_HOST: tidb
-  TIDB_VECTOR_PORT: 4000
-  TIDB_VECTOR_USER: 
-  TIDB_VECTOR_PASSWORD: 
-  TIDB_VECTOR_DATABASE: dify
-
-  # Tidb on qdrant configuration, only available when VECTOR_STORE is `tidb_on_qdrant`
-  TIDB_ON_QDRANT_URL: http://127.0.0.1
-  TIDB_ON_QDRANT_API_KEY: dify
-  TIDB_ON_QDRANT_CLIENT_TIMEOUT: 20
-  TIDB_ON_QDRANT_GRPC_ENABLED: false
-  TIDB_ON_QDRANT_GRPC_PORT: 6334
-  TIDB_PUBLIC_KEY: dify
-  TIDB_PRIVATE_KEY: dify
-  TIDB_API_URL: http://127.0.0.1
-  TIDB_IAM_API_URL: http://127.0.0.1
-  TIDB_REGION: regions/aws-us-east-1
-  TIDB_PROJECT_ID: dify
-  TIDB_SPEND_LIMIT: 100
-
-  # Chroma configuration, only available when VECTOR_STORE is `chroma`
-  CHROMA_HOST: 127.0.0.1
-  CHROMA_PORT: 8000
-  CHROMA_TENANT: default_tenant
-  CHROMA_DATABASE: default_database
-  CHROMA_AUTH_PROVIDER: chromadb.auth.token_authn.TokenAuthClientProvider
-  CHROMA_AUTH_CREDENTIALS: 
-
-  # Oracle configuration, only available when VECTOR_STORE is `oracle`
-  ORACLE_USER: dify
-  ORACLE_PASSWORD: dify
-  ORACLE_DSN: oracle:1521/FREEPDB1
-  ORACLE_CONFIG_DIR: /app/api/storage/wallet
-  ORACLE_WALLET_LOCATION: /app/api/storage/wallet
-  ORACLE_WALLET_PASSWORD: dify
-  ORACLE_IS_AUTONOMOUS: false
-
-  # relyt configurations, only available when VECTOR_STORE is `relyt`
-  RELYT_HOST: db
-  RELYT_PORT: 5432
-  RELYT_USER: postgres
-  RELYT_PASSWORD: difyai123456
-  RELYT_DATABASE: postgres
-
-  # open search configuration, only available when VECTOR_STORE is `opensearch`
-  OPENSEARCH_HOST: opensearch
-  OPENSEARCH_PORT: 9200
-  OPENSEARCH_USER: admin
-  OPENSEARCH_PASSWORD: admin
-  OPENSEARCH_SECURE: true
-
-  # tencent vector configurations, only available when VECTOR_STORE is `tencent`
-  TENCENT_VECTOR_DB_URL: http://127.0.0.1
-  TENCENT_VECTOR_DB_API_KEY: dify
-  TENCENT_VECTOR_DB_TIMEOUT: 30
-  TENCENT_VECTOR_DB_USERNAME: dify
-  TENCENT_VECTOR_DB_DATABASE: dify
-  TENCENT_VECTOR_DB_SHARD: 1
-  TENCENT_VECTOR_DB_REPLICAS: 2
-
-  # ElasticSearch configuration, only available when VECTOR_STORE is `elasticsearch`
-  ELASTICSEARCH_HOST: 0.0.0.0
-  ELASTICSEARCH_PORT: 9200
-  ELASTICSEARCH_USERNAME: elastic
-  ELASTICSEARCH_PASSWORD: elastic
-  KIBANA_PORT: 5601
-
-  # baidu vector configurations, only available when VECTOR_STORE is `baidu`
-  BAIDU_VECTOR_DB_ENDPOINT: http://127.0.0.1:5287
-  BAIDU_VECTOR_DB_CONNECTION_TIMEOUT_MS: 30000
-  BAIDU_VECTOR_DB_ACCOUNT: root
-  BAIDU_VECTOR_DB_API_KEY: dify
-  BAIDU_VECTOR_DB_DATABASE: dify
-  BAIDU_VECTOR_DB_SHARD: 1
-  BAIDU_VECTOR_DB_REPLICAS: 3
-
-  # VikingDB configurations, only available when VECTOR_STORE is `vikingdb`
-  VIKINGDB_ACCESS_KEY: your-ak
-  VIKINGDB_SECRET_KEY: your-sk
-  VIKINGDB_REGION: cn-shanghai
-  VIKINGDB_HOST: api-vikingdb.xxx.volces.com
-  VIKINGDB_SCHEMA: http
-  VIKINGDB_CONNECTION_TIMEOUT: 30
-  VIKINGDB_SOCKET_TIMEOUT: 30
-
-  # Lindorm configuration, only available when VECTOR_STORE is `lindorm`
-  LINDORM_URL: http://lindorm:30070
-  LINDORM_USERNAME: lindorm
-  LINDORM_PASSWORD: lindorm
-
-  # OceanBase Vector configuration, only available when VECTOR_STORE is `oceanbase`
-  OCEANBASE_VECTOR_HOST: oceanbase
-  OCEANBASE_VECTOR_PORT: 2881
-  OCEANBASE_VECTOR_USER: root@test
-  OCEANBASE_VECTOR_PASSWORD: difyai123456
-  OCEANBASE_VECTOR_DATABASE: test
-  OCEANBASE_CLUSTER_NAME: difyai
-  OCEANBASE_MEMORY_LIMIT: 6G
 
   # Upstash Vector configuration, only available when VECTOR_STORE is `upstash`
   UPSTASH_VECTOR_URL: https://xxx-vector.upstash.io
@@ -1102,7 +957,7 @@ globalEnv:
   EXPOSE_PLUGIN_DEBUGGING_PORT: 5003
 
   PLUGIN_DIFY_INNER_API_KEY: QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1
-  PLUGIN_DIFY_INNER_API_URL: http://api:5001
+  PLUGIN_DIFY_INNER_API_URL: http://dify-api-svc:5001
 
   ENDPOINT_URL_TEMPLATE: http://localhost/e/{hook_id}
 
@@ -1378,23 +1233,23 @@ minio:
   persistence:
     enabled: false
 
+### config for pluginDaemon
 pluginDaemon:
   replicaCount: 1
   image:
-      repository: langgenius/dify-plugin-daemon
-      pullPolicy: IfNotPresent
-      tag: "0.0.3-local"
+    repository: langgenius/dify-plugin-daemon
+    pullPolicy: IfNotPresent
+    tag: "0.0.3-local"
   env:
-      DB_DATABASE: dify_plugin
-      SERVER_PORT: 5002
-      SERVER_KEY: lYkiYYT6owG+71oLerGzA7GXCgOT++6ovaezWAjpCjf+Sjc3ZtU+qUEi
-      MAX_PLUGIN_PACKAGE_SIZE: 52428800
-      PPROF_ENABLED: false
-      DIFY_INNER_API_KEY: QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1
-      FORCE_VERIFYING_SIGNATURE: true
-      PLUGIN_REMOTE_INSTALLING_HOST: localhost
-      PLUGIN_REMOTE_INSTALLING_PORT: 5003
-      PLUGIN_WORKING_PATH: /app/storage/cwd
+    DB_DATABASE: dify_plugin
+    SERVER_PORT: 5002
+    SERVER_KEY: lYkiYYT6owG+71oLerGzA7GXCgOT++6ovaezWAjpCjf+Sjc3ZtU+qUEi
+    PPROF_ENABLED: false
+    DIFY_INNER_API_KEY: QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1
+    FORCE_VERIFYING_SIGNATURE: true
+    PLUGIN_REMOTE_INSTALLING_HOST: localhost
+    PLUGIN_REMOTE_INSTALLING_PORT: 5003
+    PLUGIN_WORKING_PATH: /app/storage/cwd
   containerPort: 5002
   imagePullSecrets: []
   podAnnotations: {}
@@ -1412,3 +1267,6 @@ pluginDaemon:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  service:
+    type: ClusterIP
+    port: 5002

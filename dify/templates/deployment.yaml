@@ -54,6 +54,8 @@ spec:
             {{- with .Values.api.envs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+            - name: PLUGIN_DAEMON_URL
+              value: "http://{{ include "dify.fullname" . }}-plugin-daemon:5002"
             - name: CODE_EXECUTION_ENDPOINT
               value: "http://{{ include "dify.fullname" . }}-sandbox"
             - name: CODE_EXECUTION_API_KEY

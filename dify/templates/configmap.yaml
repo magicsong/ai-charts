@@ -15,8 +15,8 @@ metadata:
   labels:
     {{- include "dify.labels" . | nindent 4 }}
 data:
-  {{- if .Values.configMap }}
-  {{- range $key, $value := .Values.configMap.data }}
+  {{- if .Values.globalEnv }}
+  {{- range $key, $value := .Values.globalEnv }}
   {{ $key }}: {{ $value | quote }}
   {{- end }}
   {{- end }}

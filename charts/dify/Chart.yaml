@@ -31,8 +31,8 @@ appVersion: "1.0.0"
 dependencies:
   - name: redis
     version: ~19.1.1
-    repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     condition: redis.embedded
+    repository: "https://charts.bitnami.com/bitnami"
 #   - name: postgresql
 #     version: ~15.2.5
 #     repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami

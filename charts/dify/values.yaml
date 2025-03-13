@@ -13,7 +13,7 @@ fullnameOverride: ""
 
 global:
   host: "chart-example.local"
-  registry: "docker.io"
+  imageRegistry: "docker.io"
   # Change this is your ingress is exposed with port other than 443, 80, like 8080 for instance
   port: ""
   enableTLS: false
@@ -1204,7 +1204,7 @@ redis:
     persistence:
       enabled: false
       size: 8Gi
-
+  
 postgresql:
   # using embedded postgresql
   # connection info would be set automatically

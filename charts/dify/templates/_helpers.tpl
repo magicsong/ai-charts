@@ -96,6 +96,18 @@ commonBackendEnvs are for api and worker containers
 {{- define "dify.commonBackendEnvs" -}}
 - name: STORAGE_TYPE
   value: {{ .Values.global.storageType }}
+{{- if eq .Values.global.storageType "volcengine-tos" }}
+- name: VOLCENGINE_TOS_ACCESS_KEY
+  value: {{ .Values.globalEnv.VOLCENGINE_TOS_ACCESS_KEY }}
+- name: VOLCENGINE_TOS_BUCKET_NAME
+  value: {{ .Values.globalEnv.VOLCENGINE_TOS_BUCKET_NAME }}
+- name: VOLCENGINE_TOS_ENDPOINT
+  value: {{ .Values.globalEnv.VOLCENGINE_TOS_ENDPOINT }}
+- name: VOLCENGINE_TOS_REGION
+  value: {{ .Values.globalEnv.VOLCENGINE_TOS_REGION }}
+- name: VOLCENGINE_TOS_SECRET_KEY
+  value: {{ .Values.globalEnv.VOLCENGINE_TOS_SECRET_KEY }}
+{{- end }}
 - name: INNER_API_KEY_FOR_PLUGIN
   value: QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1
 {{- if .Values.redis.embedded }}

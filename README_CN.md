@@ -5,7 +5,7 @@ AI Charts 是一个提供在 Kubernetes 上安装和管理主流 AI 应用程序
 ## 当前支持的应用
 
 ### Dify
-
+> 部分代码参考了https://github.com/douban/charts/blob/master/charts/dify
 [Dify](https://github.com/langgenius/dify) 是一个 LLM 应用开发平台，支持从创建原型到部署的全流程。
 
 #### 安装 Dify

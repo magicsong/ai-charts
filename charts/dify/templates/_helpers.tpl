@@ -144,5 +144,16 @@ commonBackendEnvs are for api and worker containers
   value: {{ .Values.minio.auth.rootUser }}
 - name: S3_SECRET_KEY
   value: {{ .Values.minio.auth.rootPassword }}
+{{- else if eq .Values.global.storageType "s3" }}
+- name: S3_BUCKET_NAME
+  value: {{ .Values.globalEnv.S3_BUCKET_NAME }}
+- name: S3_ACCESS_KEY
+  value: {{ .Values.globalEnv.S3_ACCESS_KEY }}
+- name: S3_SECRET_KEY
+  value: {{ .Values.globalEnv.S3_SECRET_KEY }}
+- name: S3_ENDPOINT
+  value: {{ .Values.globalEnv.S3_ENDPOINT }}
+- name: S3_REGION
+  value: {{ .Values.globalEnv.S3_REGION }}
 {{- end }}
 {{- end }}

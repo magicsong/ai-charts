@@ -5,8 +5,10 @@ AI Charts is a collection of Helm Charts for installing and managing mainstream 
 ## Currently Supported Applications
 
 ### Dify
+> Some code was referenced from https://github.com/douban/charts/blob/master/charts/dify
 
 [Dify](https://github.com/langgenius/dify) is an LLM application development platform that supports the entire process from creating prototypes to deployment.
+
 
 #### Installing Dify
 

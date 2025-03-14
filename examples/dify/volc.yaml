@@ -1,0 +1,37 @@
+global:
+  host: "dify.kube.ai"
+  imageRegistry: "xx-cn-beijing.cr.volces.com"
+  # Change this is your ingress is exposed with port other than 443, 80, like 8080 for instance
+  port: ""
+  enableTLS: false
+  image:
+    tag: ""
+  edition: "SELF_HOSTED"
+  storageType: "volcengine-tos"
+  # the following extra configs would be injected into:
+  # * frontend
+  # * api
+  # * worker
+  extraEnvs: []
+
+  # the following extra configs would be injected into:
+  # * api
+  # * worker
+  extraBackendEnvs:
+  # SECRET_KEY is a must, check https://docs.dify.ai/getting-started/install-self-hosted/environments#secret_key for detail
+  # read more on the readme page for secret ref
+  - name: SECRET_KEY
+    value: "PleaseReplaceThisToYourSecretOrUse"
+  # use secretRef to protect your secret
+  # - name: SECRET_KEY
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: dify
+  #       key: SECRET_KEY
+
+  # Provide extra labels for all deployments and related pods of this chart
+  labels: {}
+
+ingress:
+  enabled: true
+  className: "nginx"

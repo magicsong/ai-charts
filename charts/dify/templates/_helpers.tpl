@@ -96,6 +96,38 @@ commonBackendEnvs are for api and worker containers
 {{- define "dify.commonBackendEnvs" -}}
 - name: STORAGE_TYPE
   value: {{ .Values.global.storageType }}
+- name: DB_PLUGIN_DATABASE
+  value: dify_plugin
+- name: EXPOSE_PLUGIN_DAEMON_PORT
+  value: "5002"
+- name: PLUGIN_DAEMON_PORT
+  value: "5002"
+- name: PLUGIN_DAEMON_KEY
+  value: lYkiYYT6owG+71oLerGzA7GXCgOT++6ovaezWAjpCjf+Sjc3ZtU+qUEi
+- name: PLUGIN_DAEMON_URL
+  value: http://{{ include "dify.fullname" . }}-plugin-daemon:5002
+- name: PLUGIN_MAX_PACKAGE_SIZE
+  value: "52428800"
+- name: PLUGIN_PPROF_ENABLED
+  value: "false"
+- name: PLUGIN_DEBUGGING_HOST
+  value: 0.0.0.0
+- name: PLUGIN_DEBUGGING_PORT
+  value: "5003"
+- name: EXPOSE_PLUGIN_DEBUGGING_HOST
+  value: localhost
+- name: EXPOSE_PLUGIN_DEBUGGING_PORT
+  value: "5003"
+- name: PLUGIN_DIFY_INNER_API_KEY
+  value: QaHbTe77CtuXmsfyhR7+vRjI/+XbV1AaFy691iy+kGDv2Jvy0/eAh8Y1
+- name: PLUGIN_DIFY_INNER_API_URL
+  value: http://dify-api-svc:5001
+- name: ENDPOINT_URL_TEMPLATE
+  value: http://localhost/e/{hook_id}
+- name: MARKETPLACE_ENABLED
+  value: "true"
+- name: MARKETPLACE_API_URL
+  value: https://marketplace.dify.ai
 {{- if eq .Values.global.storageType "volcengine-tos" }}
 - name: VOLCENGINE_TOS_ACCESS_KEY
   value: {{ .Values.globalEnv.VOLCENGINE_TOS_ACCESS_KEY }}

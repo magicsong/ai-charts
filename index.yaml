@@ -3,6 +3,28 @@ entries:
   dify:
   - apiVersion: v2
     appVersion: 1.0.1
+    created: "2025-03-16T06:58:14.897988686Z"
+    dependencies:
+    - condition: redis.embedded
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: ~19.1.1
+    - condition: postgresql.embedded
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: ~15.2.5
+    description: A Helm chart for Dify
+    digest: 8806b96f21777b8f483102dae2c359f3cb27c7c871b5b777061bf9acc8a39103
+    home: https://github.com/langgenius/dify
+    maintainers:
+    - name: magicsong
+    name: dify
+    type: application
+    urls:
+    - https://github.com/magicsong/ai-charts/releases/download/dify-0.0.8/dify-0.0.8.tgz
+    version: 0.0.8
+  - apiVersion: v2
+    appVersion: 1.0.1
     created: "2025-03-14T09:54:22.016497884Z"
     dependencies:
     - condition: redis.embedded
@@ -147,4 +169,4 @@ entries:
     urls:
     - https://github.com/magicsong/ai-charts/releases/download/dify-0.0.1/dify-0.0.1.tgz
     version: 0.0.1
-generated: "2025-03-14T09:54:22.01652761Z"
+generated: "2025-03-16T06:58:14.898025805Z"

@@ -157,6 +157,7 @@ rabbitmq:
 # ClickHouse configuration
 clickhouse:
   enabled: true
+  initdbScriptsSecret: clickhouse-initdb-script
   auth:
     username: default
     password: default

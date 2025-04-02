@@ -41,6 +41,8 @@ spec:
               value: "http://{{ include "laminar.fullname" . }}-clickhouse:8123"
             - name: CLICKHOUSE_USER
               value: "{{ .Values.clickhouse.auth.username }}"
+            - name: CLICKHOUSE_PASSWORD
+              value: "{{ .Values.clickhouse.auth.password }}"
             - name: CODE_EXECUTOR_URL
               value: "http://{{ include "laminar.fullname" . }}-python-executor:{{ .Values.pythonExecutor.service.port }}"
             - name: SHARED_SECRET_TOKEN

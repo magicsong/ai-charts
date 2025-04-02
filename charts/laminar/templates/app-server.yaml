@@ -32,11 +32,7 @@ spec:
             - name: GRPC_PORT
               value: "{{ .Values.appServer.service.grpcPort }}"
             - name: DATABASE_URL
-              value: {{ if .Values.postgresql.external.enabled -}}
-                     "postgres://{{ .Values.postgresql.external.username }}:{{ .Values.postgresql.external.password }}@{{ .Values.postgresql.external.host }}:{{ .Values.postgresql.external.port }}/{{ .Values.postgresql.external.database }}"
-                     {{- else -}}
-                     "postgres://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ include "laminar.fullname" . }}-postgresql:5432/{{ .Values.postgresql.auth.database }}"
-                     {{- end }}
+              value: "{{ if .Values.postgresql.external.enabled }}{{ .Values.postgresql.external.connectionUrl }}{{ else }}postgres://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ include "laminar.fullname" . }}-postgresql:5432/{{ .Values.postgresql.auth.database }}{{ end }}"
             - name: SEMANTIC_SEARCH_URL
               value: "http://{{ include "laminar.fullname" . }}-semantic-search:{{ .Values.semanticSearchService.service.port }}"
             - name: RABBITMQ_URL

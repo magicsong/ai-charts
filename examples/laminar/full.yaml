@@ -1,0 +1,50 @@
+frontend:
+  ingress:
+    enabled: true
+    className: nginx
+    hosts:
+      - host: laminar.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+  env:
+    sharedSecretToken: "your-secure-token"
+    nextauthUrl: "https://laminar.example.com"
+    nextauthSecret: "your-nextauth-secret"
+    nextPublicUrl: "https://laminar.example.com"
+
+# Data persistence configuration
+postgresql:
+  auth:
+    username: postgres
+    password: your-secure-password
+    database: laminar
+  persistence:
+    enabled: true
+    size: 8Gi
+
+rabbitmq:
+  auth:
+    username: user
+    password: your-secure-password
+  persistence:
+    enabled: true
+    size: 8Gi
+
+clickhouse:
+  auth:
+    username: default
+    password: your-secure-password
+  persistence:
+    enabled: true
+    size: 10Gi
+
+qdrant:
+  persistence:
+    enabled: true
+    size: 8Gi
+
+# Semantic search configuration
+semanticSearchService:
+  env:
+    cohereApiKey: "your-cohere-api-key"

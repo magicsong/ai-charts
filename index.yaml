@@ -171,6 +171,29 @@ entries:
     version: 0.0.1
   laminar:
   - apiVersion: v2
+    appVersion: v0.1.2
+    created: "2025-04-02T10:01:09.79401971Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: ~15.0.0
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: ~11.0.0
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: https://charts.bitnami.com/bitnami
+      version: ~4.0.0
+    description: A Helm chart for Laminar AI platform
+    digest: 5d3ccf18e92c6b5ac7b58ceaa2b395188cbf70353dace28420dab17a7f183169
+    name: laminar
+    type: application
+    urls:
+    - https://github.com/magicsong/ai-charts/releases/download/laminar-0.1.1/laminar-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2025-04-02T03:24:58.354206001Z"
     dependencies:
@@ -193,4 +216,4 @@ entries:
     urls:
     - https://github.com/magicsong/ai-charts/releases/download/laminar-0.1.0/laminar-0.1.0.tgz
     version: 0.1.0
-generated: "2025-04-02T03:24:58.354229455Z"
+generated: "2025-04-02T10:01:09.794045408Z"

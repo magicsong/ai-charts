@@ -87,7 +87,7 @@ helm repo update
 2. Create a custom `values.yaml` file:
 
 ```yaml
-# 基本配置
+# Basic configuration
 frontend:
   ingress:
     enabled: true
@@ -103,7 +103,7 @@ frontend:
     nextauthSecret: "your-nextauth-secret"
     nextPublicUrl: "https://laminar.example.com"
 
-# 数据持久化配置
+# Data persistence configuration
 postgresql:
   auth:
     username: postgres
@@ -134,7 +134,7 @@ qdrant:
     enabled: true
     size: 8Gi
 
-# 语义搜索配置
+# Semantic search configuration
 semanticSearchService:
   env:
     cohereApiKey: "your-cohere-api-key"
@@ -148,14 +148,14 @@ helm install laminar ai-charts/laminar -f values.yaml
 
 #### Customizing Laminar
 
-Laminar 支持多种自定义选项：
+Laminar supports various customization options:
 
-- **外部 PostgreSQL**: 配置 `postgresql.external.enabled=true` 和相关连接参数
-- **资源配置**: 每个组件都可以通过标准 Kubernetes 资源设置进行配置
-- **持久化**: 所有数据组件（PostgreSQL、RabbitMQ、ClickHouse、Qdrant）支持持久化存储
-- **Ingress**: 前端组件支持通过 Ingress 对外暴露服务
+- **External PostgreSQL**: Configure `postgresql.external.enabled=true` and related connection parameters
+- **Resource Configuration**: Each component can be configured with standard Kubernetes resource settings
+- **Persistence**: All data components (PostgreSQL, RabbitMQ, ClickHouse, Qdrant) support persistent storage
+- **Ingress**: The frontend component can be exposed via Ingress
 
-更多配置选项请参考 Helm Chart 的 values.yaml 文件。
+For more configuration options, please refer to the values.yaml file in the Helm Chart.
 
 ## Contributing
 

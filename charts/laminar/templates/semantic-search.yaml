@@ -1,0 +1,63 @@
+{{- if .Values.semanticSearchService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "laminar.fullname" . }}-semantic-search
+  labels:
+    {{- include "laminar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: semantic-search
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "laminar.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: semantic-search
+  template:
+    metadata:
+      labels:
+        {{- include "laminar.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: semantic-search
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: semantic-search
+          image: {{ .Values.semanticSearchService.image.repository }}:{{ .Values.semanticSearchService.image.tag }}
+          imagePullPolicy: {{ .Values.semanticSearchService.image.pullPolicy }}
+          env:
+            - name: PORT
+              value: "{{ .Values.semanticSearchService.service.port }}"
+            - name: QDRANT_URL
+              value: "http://{{ include "laminar.fullname" . }}-qdrant:{{ .Values.qdrant.service.grpcPort }}"
+            - name: COHERE_ENDPOINT
+              value: {{ .Values.semanticSearchService.env.cohereEndpoint | quote }}
+            - name: COHERE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "laminar.fullname" . }}-secrets
+                  key: cohereApiKey
+          ports:
+            - name: http
+              containerPort: {{ .Values.semanticSearchService.service.port }}
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "laminar.fullname" . }}-semantic-search
+  labels:
+    {{- include "laminar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: semantic-search
+spec:
+  type: {{ .Values.semanticSearchService.service.type }}
+  ports:
+    - port: {{ .Values.semanticSearchService.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "laminar.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: semantic-search
+{{- end }}

@@ -1,0 +1,136 @@
+# This compose definition pulls the latest images from the GitHub Container Registry.
+# This is the best and fastest for self-hosting, as the images are already built and ready to go.
+# If you want to build images locally, you can use the docker-compose-local-build.yml file instead.
+
+name: lmnr
+
+services:
+  qdrant:
+    image: qdrant/qdrant
+    volumes:
+      - type: volume
+        source: qdrant-data
+        target: /data
+
+  rabbitmq:
+    image: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    healthcheck:
+      test: rabbitmq-diagnostics -q check_running && rabbitmq-diagnostics -q check_local_alarms
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    volumes:
+      - type: volume
+        source: clickhouse-data
+        target: /var/lib/clickhouse/
+      - type: volume
+        source: clickhouse-logs
+        target: /var/log/clickhouse-server/
+      - type: bind
+        source: ./clickhouse/config/users.xml
+        target: /etc/clickhouse-server/users.d/users.xml
+        read_only: true
+      - type: bind
+        source: ./clickhouse/001000-initial.sql
+        target: /docker-entrypoint-initdb.d/001000-initial.sql
+        read_only: true
+    cap_add:
+      - SYS_NICE
+      - NET_ADMIN
+      - IPC_LOCK
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  semantic-search-service:
+    image: ghcr.io/lmnr-ai/semantic-search-service
+    depends_on:
+      - qdrant
+    environment:
+      PORT: 8080
+      QDRANT_URL: http://qdrant:6334
+      COHERE_ENDPOINT: https://api.cohere.ai/v1/embed
+      COHERE_API_KEY: ${COHERE_API_KEY}
+    pull_policy: always
+
+  python-executor:
+    image: ghcr.io/lmnr-ai/python-executor
+    pull_policy: always
+
+  postgres:
+    image: postgres:16
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+
+  app-server:
+    image: ghcr.io/lmnr-ai/app-server
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    depends_on:
+      semantic-search-service:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      clickhouse:
+        condition: service_started
+    pull_policy: always
+    environment:
+      PORT: 8000
+      GRPC_PORT: 8001
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      SEMANTIC_SEARCH_URL: http://semantic-search-service:8080
+      RABBITMQ_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672/%2f
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CODE_EXECUTOR_URL: http://python-executor:8811
+      SHARED_SECRET_TOKEN: ${SHARED_SECRET_TOKEN}
+      ENVIRONMENT: FULL
+      AEAD_SECRET_KEY: ${AEAD_SECRET_KEY}
+
+  frontend:
+    image: ghcr.io/lmnr-ai/frontend
+    ports:
+      - "5667:5667"
+    pull_policy: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      clickhouse:
+        condition: service_started
+    environment:
+      PORT: 5667
+      BACKEND_URL: http://app-server:8000
+      SHARED_SECRET_TOKEN: ${SHARED_SECRET_TOKEN}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      NEXTAUTH_URL: http://localhost:5667
+      NEXTAUTH_SECRET: some_secret
+      NEXT_PUBLIC_URL: http://localhost:5667
+      ENVIRONMENT: FULL
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+
+volumes:
+  qdrant-data:
+  clickhouse-data:
+  clickhouse-logs:
+  postgres-data:

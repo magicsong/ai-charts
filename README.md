@@ -71,6 +71,92 @@ helm upgrade dify ai-charts/dify -f values.yaml
 kubectl exec -it <dify-pod-name> -- flask db upgrade
 ```
 
+### Laminar
+
+[Laminar](https://github.com/lmnr-ai/laminar) is a comprehensive AI platform with multiple components including PostgreSQL, RabbitMQ, ClickHouse, Qdrant vector database, semantic search services, and more.
+
+#### Installing Laminar
+
+1. Add the Helm repository:
+
+```bash
+helm repo add ai-charts https://magicsong.github.io/ai-charts/
+helm repo update
+```
+
+2. Create a custom `values.yaml` file:
+
+```yaml
+# 基本配置
+frontend:
+  ingress:
+    enabled: true
+    className: nginx
+    hosts:
+      - host: laminar.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+  env:
+    sharedSecretToken: "your-secure-token"
+    nextauthUrl: "https://laminar.example.com"
+    nextauthSecret: "your-nextauth-secret"
+    nextPublicUrl: "https://laminar.example.com"
+
+# 数据持久化配置
+postgresql:
+  auth:
+    username: postgres
+    password: your-secure-password
+    database: laminar
+  persistence:
+    enabled: true
+    size: 8Gi
+
+rabbitmq:
+  auth:
+    username: user
+    password: your-secure-password
+  persistence:
+    enabled: true
+    size: 8Gi
+
+clickhouse:
+  auth:
+    username: default
+    password: your-secure-password
+  persistence:
+    enabled: true
+    size: 10Gi
+
+qdrant:
+  persistence:
+    enabled: true
+    size: 8Gi
+
+# 语义搜索配置
+semanticSearchService:
+  env:
+    cohereApiKey: "your-cohere-api-key"
+```
+
+3. Install the chart:
+
+```bash
+helm install laminar ai-charts/laminar -f values.yaml
+```
+
+#### Customizing Laminar
+
+Laminar 支持多种自定义选项：
+
+- **外部 PostgreSQL**: 配置 `postgresql.external.enabled=true` 和相关连接参数
+- **资源配置**: 每个组件都可以通过标准 Kubernetes 资源设置进行配置
+- **持久化**: 所有数据组件（PostgreSQL、RabbitMQ、ClickHouse、Qdrant）支持持久化存储
+- **Ingress**: 前端组件支持通过 Ingress 对外暴露服务
+
+更多配置选项请参考 Helm Chart 的 values.yaml 文件。
+
 ## Contributing
 
 Pull requests and issues are welcome to help improve this project.

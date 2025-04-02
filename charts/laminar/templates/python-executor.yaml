@@ -1,0 +1,51 @@
+{{- if .Values.pythonExecutor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "laminar.fullname" . }}-python-executor
+  labels:
+    {{- include "laminar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: python-executor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "laminar.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: python-executor
+  template:
+    metadata:
+      labels:
+        {{- include "laminar.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: python-executor
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: python-executor
+          image: {{ .Values.pythonExecutor.image.repository }}:{{ .Values.pythonExecutor.image.tag }}
+          imagePullPolicy: {{ .Values.pythonExecutor.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.pythonExecutor.service.port }}
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "laminar.fullname" . }}-python-executor
+  labels:
+    {{- include "laminar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: python-executor
+spec:
+  type: {{ .Values.pythonExecutor.service.type }}
+  ports:
+    - port: {{ .Values.pythonExecutor.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "laminar.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: python-executor
+{{- end }}

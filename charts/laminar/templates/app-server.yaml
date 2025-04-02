@@ -1,0 +1,91 @@
+{{- if .Values.appServer.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "laminar.fullname" . }}-app-server
+  labels:
+    {{- include "laminar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: app-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "laminar.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: app-server
+  template:
+    metadata:
+      labels:
+        {{- include "laminar.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app-server
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: app-server
+          image: {{ .Values.appServer.image.repository }}:{{ .Values.appServer.image.tag }}
+          imagePullPolicy: {{ .Values.appServer.image.pullPolicy }}
+          env:
+            - name: PORT
+              value: "{{ .Values.appServer.service.port }}"
+            - name: GRPC_PORT
+              value: "{{ .Values.appServer.service.grpcPort }}"
+            - name: DATABASE_URL
+              value: {{ if .Values.postgresql.external.enabled -}}
+                     "postgres://{{ .Values.postgresql.external.username }}:{{ .Values.postgresql.external.password }}@{{ .Values.postgresql.external.host }}:{{ .Values.postgresql.external.port }}/{{ .Values.postgresql.external.database }}"
+                     {{- else -}}
+                     "postgres://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ include "laminar.fullname" . }}-postgresql:5432/{{ .Values.postgresql.auth.database }}"
+                     {{- end }}
+            - name: SEMANTIC_SEARCH_URL
+              value: "http://{{ include "laminar.fullname" . }}-semantic-search:{{ .Values.semanticSearchService.service.port }}"
+            - name: RABBITMQ_URL
+              value: "amqp://{{ .Values.rabbitmq.auth.username }}:{{ .Values.rabbitmq.auth.password }}@{{ include "laminar.fullname" . }}-rabbitmq:5672/%2f"
+            - name: CLICKHOUSE_URL
+              value: "http://{{ include "laminar.fullname" . }}-clickhouse:8123"
+            - name: CLICKHOUSE_USER
+              value: "{{ .Values.clickhouse.auth.username }}"
+            - name: CODE_EXECUTOR_URL
+              value: "http://{{ include "laminar.fullname" . }}-python-executor:{{ .Values.pythonExecutor.service.port }}"
+            - name: SHARED_SECRET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "laminar.fullname" . }}-secrets
+                  key: sharedSecretToken
+            - name: ENVIRONMENT
+              value: {{ .Values.appServer.env.environment }}
+            - name: AEAD_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "laminar.fullname" . }}-secrets
+                  key: aeadSecretKey
+          ports:
+            - name: http
+              containerPort: {{ .Values.appServer.service.port }}
+              protocol: TCP
+            - name: grpc
+              containerPort: {{ .Values.appServer.service.grpcPort }}
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "laminar.fullname" . }}-app-server
+  labels:
+    {{- include "laminar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: app-server
+spec:
+  type: {{ .Values.appServer.service.type }}
+  ports:
+    - port: {{ .Values.appServer.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.appServer.service.grpcPort }}
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+  selector:
+    {{- include "laminar.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: app-server
+{{- end }}

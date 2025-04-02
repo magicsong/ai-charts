@@ -1,0 +1,12 @@
+dependencies:
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 15.0.0
+- name: rabbitmq
+  repository: https://charts.bitnami.com/bitnami
+  version: 11.0.4
+- name: clickhouse
+  repository: https://charts.bitnami.com/bitnami
+  version: 4.0.10
+digest: sha256:657e3552613d45f760c02ede6154357e08cada2054998279a6766ef2a7f03562
+generated: "2025-04-02T10:49:14.352738+08:00"

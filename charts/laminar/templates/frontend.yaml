@@ -1,0 +1,78 @@
+{{- if .Values.frontend.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "laminar.fullname" . }}-frontend
+  labels:
+    {{- include "laminar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "laminar.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: frontend
+  template:
+    metadata:
+      labels:
+        {{- include "laminar.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: frontend
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: frontend
+          image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          env:
+            - name: PORT
+              value: "{{ .Values.frontend.service.port }}"
+            - name: BACKEND_URL
+              value: "http://{{ include "laminar.fullname" . }}-app-server:{{ .Values.appServer.service.port }}"
+            - name: SHARED_SECRET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "laminar.fullname" . }}-secrets
+                  key: sharedSecretToken
+            - name: DATABASE_URL
+              value: "postgres://{{ .Values.postgresql.auth.username }}:{{ .Values.postgresql.auth.password }}@{{ include "laminar.fullname" . }}-postgresql:5432/{{ .Values.postgresql.auth.database }}"
+            - name: NEXTAUTH_URL
+              value: {{ .Values.frontend.env.nextauthUrl }}
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "laminar.fullname" . }}-secrets
+                  key: nextauthSecret
+            - name: NEXT_PUBLIC_URL
+              value: {{ .Values.frontend.env.nextPublicUrl }}
+            - name: ENVIRONMENT
+              value: {{ .Values.frontend.env.environment }}
+            - name: CLICKHOUSE_URL
+              value: "http://{{ include "laminar.fullname" . }}-clickhouse:8123"
+            - name: CLICKHOUSE_USER
+              value: "{{ .Values.clickhouse.auth.username }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.frontend.service.port }}
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "laminar.fullname" . }}-frontend
+  labels:
+    {{- include "laminar.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  type: {{ .Values.frontend.service.type }}
+  ports:
+    - port: {{ .Values.frontend.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "laminar.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+{{- end }}

@@ -169,4 +169,28 @@ entries:
     urls:
     - https://github.com/magicsong/ai-charts/releases/download/dify-0.0.1/dify-0.0.1.tgz
     version: 0.0.1
-generated: "2025-03-16T06:58:14.898025805Z"
+  laminar:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-04-02T03:24:58.354206001Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: ~15.0.0
+    - condition: rabbitmq.enabled
+      name: rabbitmq
+      repository: https://charts.bitnami.com/bitnami
+      version: ~11.0.0
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: https://charts.bitnami.com/bitnami
+      version: ~4.0.0
+    description: A Helm chart for Laminar AI platform
+    digest: f35ce79225e535529862f6a2c75771ce50b760a4b36c30bdc4fa9dd4c8b4a190
+    name: laminar
+    type: application
+    urls:
+    - https://github.com/magicsong/ai-charts/releases/download/laminar-0.1.0/laminar-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-04-02T03:24:58.354229455Z"

@@ -53,6 +53,8 @@ spec:
               value: "http://{{ include "laminar.fullname" . }}-clickhouse:8123"
             - name: CLICKHOUSE_USER
               value: "{{ .Values.clickhouse.auth.username }}"
+            - name: CLICKHOUSE_PASSWORD
+              value: "{{ .Values.clickhouse.auth.password }}"   
           ports:
             - name: http
               containerPort: {{ .Values.frontend.service.port }}
